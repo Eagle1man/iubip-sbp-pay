@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Оплата дополнительных образовательных услуг — ИУБиП</title>
+<meta name="description" content="Оплата платных дополнительных образовательных услуг ИУБиП через СБП">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-head">
+  <!-- Верхняя служебная строка -->
+  <div class="topbar">
+    <div class="wrap topbar-in">
+      <nav class="topbar-links">
+        <a href="#">Сведения об образовательной организации</a>
+        <a href="#">Минобрнауки</a>
+        <a href="#">Минпросвещения России</a>
+      </nav>
+      <span class="topbar-a11y">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M12 4.5c-5 0-9 4.5-9 7.5s4 7.5 9 7.5 9-4.5 9-7.5-4-7.5-9-7.5zm0 12.5a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/>
+        </svg>
+        Версия для слабовидящих
+      </span>
+    </div>
+  </div>
+
+  <!-- Логотип, название, контакты -->
+  <div class="brandbar">
+    <div class="wrap brandbar-in">
+      <a class="brand" href="#">
+        <span class="brand-logo">
+          <img src="assets/iubip-logo.svg" width="121" height="74"
+               alt="Логотип Южного университета (ИУБиП)">
+        </span>
+        <span class="brand-text">
+          <span class="brand-name">ЮЖНЫЙ УНИВЕРСИТЕТ (ИУБиП)</span>
+          <span class="brand-latin">SOUTHERN UNIVERSITY (IMBL)</span>
+        </span>
+      </a>
+
+      <div class="contacts">
+        <div class="contact">
+          <span class="contact-label">Горячая линия (звонок бесплатный)</span>
+          <a class="contact-value" href="tel:88007755012">8 800 77-55-012</a>
+        </div>
+        <div class="contact">
+          <span class="contact-label">Приёмная комиссия</span>
+          <a class="contact-value" href="tel:+78632454565">8 (863) 245-45-65</a>
+        </div>
+        <a class="callback" href="#">Заказать звонок</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Основное меню -->
+  <nav class="mainnav">
+    <div class="wrap mainnav-in">
+      <a href="#">Экосистема Университета</a>
+      <a href="#">Образование</a>
+      <a href="#">Наука и инновации</a>
+      <a href="#">Международная деятельность</a>
+      <span class="mainnav-current">Оплата услуг</span>
+    </div>
+  </nav>
+</header>
+
+<header class="page-head">
+  <div class="wrap">
+    <h1>Оплата дополнительных образовательных услуг</h1>
+    <p class="sub">по изучению дисциплин сверх объёма и сверх программы,
+      предусмотренных учебным планом</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ШАГ 1: ДАННЫЕ СТУДЕНТА -->
+  <section class="card" id="step-form">
+    <h2><span class="num">1</span> Данные для оплаты</h2>
+
+    <div class="hint">
+      Все поля обязательны. Назначение платежа формируется автоматически
+      и попадёт в выгрузку для бухгалтерии вместе с оплатой.
+    </div>
+
+    <form id="pay-form" autocomplete="off" novalidate>
+
+      <fieldset class="fio-block">
+        <legend>Фамилия, имя, отчество обучающегося</legend>
+
+        <div class="row">
+          <div class="field">
+            <label for="last">Фамилия</label>
+            <input type="text" id="last" name="last" placeholder="Петрова" maxlength="50" required>
+            <span class="err" data-for="last"></span>
+          </div>
+          <div class="field">
+            <label for="first">Имя</label>
+            <input type="text" id="first" name="first" placeholder="Анна" maxlength="50" required>
+            <span class="err" data-for="first"></span>
+          </div>
+          <div class="field">
+            <label for="middle">Отчество</label>
+            <input type="text" id="middle" name="middle" placeholder="Ивановна" maxlength="50">
+            <span class="err" data-for="middle"></span>
+            <span class="note">если есть</span>
+          </div>
+        </div>
+      </fieldset>
+
+      <div class="row">
+        <div class="field">
+          <label for="phone">Телефон обучающегося</label>
+          <input type="tel" id="phone" name="phone" placeholder="+7 900 000-00-00" maxlength="20" required>
+          <span class="err" data-for="phone"></span>
+          <span class="note">нужен для идентификации плательщика в СБП</span>
+        </div>
+
+        <div class="field">
+          <label for="group">Группа</label>
+          <input type="text" id="group" name="group" placeholder="ГР-12" maxlength="20" required>
+          <span class="err" data-for="group"></span>
+        </div>
+
+        <div class="field">
+          <label for="amount">Сумма, ₽</label>
+          <input type="number" id="amount" name="amount" placeholder="500" min="500" step="1" required>
+          <span class="err" data-for="amount"></span>
+          <span class="note">не менее 500 ₽</span>
+        </div>
+      </div>
+
+      <div class="preview" id="purpose-preview">
+        <span class="preview-label">Назначение платежа, которое увидит плательщик:</span>
+        <span class="preview-value" id="purpose-text">—</span>
+      </div>
+
+    </form>
+  </section>
+
+  <!-- ШАГ 2: ОФЕРТА И ПДн -->
+  <section class="card" id="step-consent">
+    <h2><span class="num">2</span> Оферта и согласие</h2>
+
+    <div class="doc">
+      <div class="doc-head">
+        <strong>Публичная оферта</strong>
+        <a href="https://iubip.ru/education/apo/oferta/" target="_blank" rel="noopener">открыть на сайте ИУБиП</a>
+      </div>
+      <div class="doc-scroll" id="offer-scroll" tabindex="0" role="region"
+           aria-label="Текст публичной оферты">
+        <div class="doc-body" id="offer-body"></div>
+      </div>
+      <div class="doc-foot">
+        <span class="scroll-hint" id="scroll-hint">Прокрутите текст до конца, чтобы продолжить</span>
+        <span class="scroll-done" id="scroll-done" hidden>Текст прочитан</span>
+      </div>
+      <label class="check">
+        <input type="checkbox" id="agree-offer" disabled>
+        <span>Я принимаю условия <a href="https://iubip.ru/education/apo/oferta/"
+              target="_blank" rel="noopener">Публичной оферты</a>
+          и полностью с ними ознакомлен</span>
+      </label>
+    </div>
+
+    <div class="doc">
+      <div class="doc-head">
+        <strong>Согласие на обработку персональных данных</strong>
+        <button type="button" class="link-btn" id="pd-open">прочитать полностью</button>
+      </div>
+      <label class="check">
+        <input type="checkbox" id="agree-pd">
+        <span>Я даю согласие на обработку персональных данных
+          в соответствии с <a href="https://iubip.ru/education/apo/oferta/#pd"
+             target="_blank" rel="noopener">п. 4.7 оферты</a>
+          и ФЗ № 152-ФЗ «О персональных данных»</span>
+      </label>
+    </div>
+  </section>
+
+  <!-- ШАГ 3: ОПЛАТА -->
+  <section class="card" id="step-pay">
+    <h2><span class="num">3</span> Оплата через СБП</h2>
+
+    <div id="not-ready" class="not-ready">
+      Заполните все поля и подтвердите оба документа, чтобы продолжить.
+    </div>
+
+    <button type="button" id="pay-btn" class="pay-btn" disabled>
+      Перейти к оплате
+    </button>
+
+    <div id="pay-block" hidden>
+      <div class="qr-area">
+        <div class="qr-box">
+          <div id="qr-holder" class="qr-holder"></div>
+          <div class="qr-placeholder" id="qr-placeholder">
+            <span>Место для QR-кода СБП</span>
+            <small>появится после подключения эквайринга</small>
+          </div>
+        </div>
+        <ol class="pay-steps">
+          <li>Откройте приложение своего банка на телефоне.</li>
+          <li>Перейдите в раздел переводов по QR-коду.</li>
+          <li>Наведите камеру на код или выберите оплату по QR.</li>
+          <li>Проверьте назначение платежа и сумму.</li>
+          <li>Подтвердите оплату.</li>
+        </ol>
+      </div>
+
+      <div class="status-box">
+        <div class="status-line">
+          <span id="status-badge" class="badge">Ожидание оплаты</span>
+          <span id="status-detail" class="status-detail"></span>
+        </div>
+        <dl class="status-facts">
+          <div><dt>Сумма</dt><dd id="fact-amount">—</dd></div>
+          <div><dt>Обучающийся</dt><dd id="fact-fio">—</dd></div>
+          <div><dt>Группа</dt><dd id="fact-group">—</dd></div>
+          <div><dt>Номер заказа</dt><dd id="fact-order">—</dd></div>
+          <div><dt>Идентификатор QR</dt><dd id="fact-qrcid">—</dd></div>
+        </dl>
+      </div>
+
+      <div id="result-box" class="result-box" hidden></div>
+    </div>
+  </section>
+
+  <p class="page-foot">
+    По вопросам оплаты обращайтесь в бухгалтерию ИУБиП.
+    Реквизиты исполнителя указаны в разделе 9 публичной оферты.
+  </p>
+</main>
+
+<!-- Модальное окно с согласием на ПДн -->
+<div class="modal" id="pd-modal" hidden>
+  <div class="modal-inner">
+    <div class="modal-head">
+      <strong>Согласие на обработку персональных данных</strong>
+      <button type="button" class="link-btn" id="pd-close">закрыть</button>
+    </div>
+    <div class="doc-scroll modal-scroll" tabindex="0">
+      <div class="doc-body" id="pd-body"></div>
+    </div>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script src="offer.js"></script>
+<script src="alfa-sbp.js"></script>
+<script src="validation.js"></script>
+<script src="qr-renderer.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

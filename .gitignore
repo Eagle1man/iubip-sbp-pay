@@ -1,0 +1,13 @@
+# Персональные данные плательщиков и журнал платежей — не в репозиторий
+data/
+*.tmp
+
+# Настройки продакшена с ключами мерчанта
+.env
+*.local.js
+secrets/
+
+node_modules/
+npm-debug.log*
+.DS_Store
+Thumbs.db

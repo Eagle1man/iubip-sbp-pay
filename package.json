@@ -1,0 +1,13 @@
+{
+  "name": "iubip-sbp-pay",
+  "version": "1.0.0",
+  "description": "Приём оплаты дополнительных образовательных услуг ИУБиП через СБП Альфа-Банка",
+  "private": true,
+  "scripts": {
+    "start": "node server/index.js",
+    "test": "node test/verify.js && node test/server-smoke.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
