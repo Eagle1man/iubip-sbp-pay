@@ -349,6 +349,41 @@
     if (e.key === 'Escape' && !pdModal.hidden) closePd();
   });
 
+  /* ---- Логотип ----
+     Путь к нему может быть задан в data-logo-src. Если картинка по этому
+     пути не пришла, пробуем варианты рядом со страницей: положить
+     assets/ внутрь папки раздела проще, чем разбираться с абсолютными
+     путями при переносе на Bitrix. */
+  (function resolveLogo() {
+    var img = document.querySelector('[data-logo-src]');
+    if (!img) return;
+
+    var candidates = [
+      img.getAttribute('data-logo-src'),
+      '../assets/iubip-logo.svg',
+      'assets/iubip-logo.svg',
+      '/assets/iubip-logo.svg',
+    ].filter(Boolean);
+
+    var i = 0;
+    function tryNext() {
+      if (i >= candidates.length) {
+        /* Логотип не критичен для оплаты: оставляем текст, убираем
+           пустое место, чтобы не было дыры в шапке. */
+        var box = document.querySelector('.brand-logo');
+        if (box) box.style.display = 'none';
+        return;
+      }
+      var url = candidates[i++];
+      img.onload = function () {
+        img.removeAttribute('data-logo-src');
+      };
+      img.onerror = tryNext;
+      img.src = url;
+    }
+    tryNext();
+  })();
+
   /* ---- Старт ---- */
   refreshPayButton();
 

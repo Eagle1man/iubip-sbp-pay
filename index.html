@@ -32,7 +32,11 @@
     <div class="wrap brandbar-in">
       <a class="brand" href="#">
         <span class="brand-logo">
-          <img src="assets/iubip-logo.svg" width="121" height="74"
+          <!-- Путь к логотипу задаётся здесь же: при вложенной раскладке
+               (страница в подразделе, assets рядом с разделом) относительный
+               путь перестаёт работать. См. README, раздел про Bitrix. -->
+          <img src="logo-placeholder" data-logo-src="assets/iubip-logo.svg"
+               width="121" height="74"
                alt="Логотип Южного университета (ИУБиП)">
         </span>
         <span class="brand-text">
