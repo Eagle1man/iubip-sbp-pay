@@ -163,8 +163,11 @@
       return;
     }
 
-    /* В боевом режиме Альфа отдаёт готовое изображение в base64 */
-    if (qrDataOrImage.indexOf('data:image') === 0) {
+    /* Готовое изображение: base64 от Альфы или файл в assets/ */
+    if (
+      qrDataOrImage.indexOf('data:image') === 0 ||
+      /\.(svg|png)$/i.test(qrDataOrImage)
+    ) {
       var img = document.createElement('img');
       img.src = qrDataOrImage;
       img.alt = 'QR-код для оплаты через СБП';
@@ -219,14 +222,21 @@
         }
         currentPayment = payment;
         payBlock.hidden = false;
-        renderQr(payment.image || payment.qrData || payment.payload);
+        /* В demo-режиме показываем настоящий статический QR банка,
+           а не локально собранный: студент видит то же, что и в бою.
+           В боевом режиме приходит изображение от Альфы — см. выше. */
+        renderQr(
+          payment.stub && CFG.STATIC_QR_SRC
+            ? CFG.STATIC_QR_SRC
+            : payment.image || payment.qrData || payment.payload
+        );
         showFacts(currentOrder, payment);
         setBadge(
           payment.stub ? 'Демо-режим: ожидание оплаты' : 'Ожидание оплаты',
           'wait'
         );
         statusDetail.textContent = payment.stub
-          ? 'Реальных денег нет — QR собран локально из данных формы.'
+          ? 'Демонстрационный код банка: реальных денег нет.'
           : 'Отсканируйте код в приложении банка.';
         payBtn.textContent = 'QR создан — ожидаем оплату';
         startPolling();

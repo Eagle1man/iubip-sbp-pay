@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>QR-коды для оплаты — ИУБиП</title>
+<link rel="icon" href="assets/iubip-logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+<style>
+  /* Дополнения к общему стилю — только для этой страницы */
+  .qr-cards { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .qr-card {
+    background: #fff; border: 1px solid #e3e8ef; border-radius: 12px;
+    padding: 22px; display: flex; flex-direction: column; gap: 14px;
+  }
+  .qr-card img { width: 220px; height: 220px; align-self: center; }
+  .qr-card h2 { font-size: 17px; margin: 0; }
+  .qr-card p { margin: 0; color: #5a6472; font-size: 14px; line-height: 1.5; }
+  .qr-card code {
+    display: block; word-break: break-all; font-size: 12px;
+    background: #f4f6f9; border-radius: 6px; padding: 8px 10px; color: #334;
+  }
+  .qr-dl { display: flex; gap: 10px; flex-wrap: wrap; }
+  .qr-dl a {
+    display: inline-block; padding: 8px 14px; border-radius: 8px; font-size: 14px;
+    text-decoration: none; border: 1px solid #dfe4ec; color: #0b3d91;
+  }
+  .qr-dl a:hover { background: #f0f4fb; }
+  .warn-note {
+    margin-top: 26px; background: #fff8e6; border: 1px solid #f0d99a;
+    border-radius: 10px; padding: 16px 18px; font-size: 14px; line-height: 1.55;
+  }
+</style>
+</head>
+<body>
+
+<header class="page-head">
+  <div class="wrap">
+    <h1>QR-коды для оплаты</h1>
+    <p class="sub">файлы для печати и размещения на сайте.
+      Адрес зашит внутрь кода и не меняется сам.</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="card">
+    <div class="qr-cards">
+
+      <article class="qr-card">
+        <img src="assets/qr-site.svg" alt="QR-код демонстрационной страницы">
+        <h2>Демонстрационная страница</h2>
+        <p>Ведёт на показанную страницу оплаты (GitHub Pages). Для проверки
+           и согласования с заказчиком.</p>
+        <code>https://eagle1man.github.io/iubip-sbp-pay/</code>
+        <div class="qr-dl">
+          <a href="assets/qr-site.png" download>Скачать PNG</a>
+          <a href="assets/qr-site.svg" download>Скачать SVG</a>
+        </div>
+      </article>
+
+      <article class="qr-card">
+        <img src="assets/qr-iubip.svg" alt="QR-код страницы на сайте ИУБиП">
+        <h2>Страница на сайте ИУБиП</h2>
+        <p>Для развёртывания на iubip.ru. Адрес уточняется у администратора
+           сайта — после этого код перевыпускается командой
+           <code style="display:inline;padding:2px 6px">node tools/gen-qr.mjs</code>.</p>
+        <code>https://iubip.ru/payment/</code>
+        <div class="qr-dl">
+          <a href="assets/qr-iubip.png" download>Скачать PNG</a>
+          <a href="assets/qr-iubip.svg" download>Скачать SVG</a>
+        </div>
+      </article>
+
+      <article class="qr-card">
+        <img src="assets/alfa-qr.svg" alt="Статический QR-код банка для оплаты через СБП">
+        <h2>Оплата через СБП (код банка)</h2>
+        <p>Статический QR Альфа-Банка. Именно по нему студент оплачивает —
+           он показывается на странице после заполнения формы.</p>
+        <code>https://qr.nspk.ru/AS1A003R0QAVSGQG9H1B6KJ8U4Q9MQFI</code>
+        <div class="qr-dl">
+          <a href="assets/alfa-qr.png" download>Скачать PNG</a>
+          <a href="assets/alfa-qr.svg" download>Скачать SVG</a>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="warn-note">
+      <strong>Что важно знать про статический QR банка.</strong>
+      Он всегда ведёт на одну и ту же страницу оплаты и не несёт сумму
+      с ФИО: связать платёж с конкретным студентом сможет только
+      подключённый API банка (см. README, раздел «Подключение Альфа-банка»).
+      До подключения API страница показывает код честно, без обещаний
+      автоматической сверки.
+    </div>
+  </section>
+</main>
+
+</body>
+</html>

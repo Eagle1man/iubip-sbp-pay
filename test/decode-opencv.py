@@ -38,4 +38,32 @@ print()
 print("QR прочитано камерой: %d из %d" % (ok, len(CASES)))
 for b in bad:
     print("  не прочитано:", b)
-sys.exit(0 if ok == len(CASES) else 1)
+
+# ---- Выпущенные файлы assets/*.png -----------------------------------
+# Адреса берутся из tools/gen-qr.mjs, чтобы тест не расходился со скриптом
+# выпуска: поменяли адрес — тест требует перевыпустить файлы.
+import re, os
+gen = open('tools/gen-qr.mjs', encoding='utf-8').read()
+targets = re.findall(r"name: '([^']+)',\s*\n\s*url: '([^']+)'", gen)
+
+print()
+bad_assets = []
+for name, url in targets:
+    f = 'assets/%s.png' % name
+    if not os.path.exists(f):
+        bad_assets.append((name, 'нет файла — запустите node tools/gen-qr.mjs'))
+        print("FAIL %s: файла нет" % f)
+        continue
+    img = cv2.imdecode(np.fromfile(f, dtype=np.uint8), cv2.IMREAD_GRAYSCALE)
+    got, _, _ = det.detectAndDecode(img)
+    good = (got == url)
+    if not good:
+        bad_assets.append((name, repr(got)[:60]))
+    print("%s %s -> %s" % ("OK  " if good else "FAIL", f, got[:60]))
+
+print()
+print("Файлы assets: прочитано %d из %d" % (len(targets) - len(bad_assets), len(targets)))
+for b in bad_assets:
+    print("  проблема:", b)
+
+sys.exit(0 if ok == len(CASES) and not bad_assets else 1)

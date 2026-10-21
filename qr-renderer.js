@@ -497,6 +497,26 @@
     return null;
   }
 
+  /* Возвращает матрицу модулей — нужна скрипту выпуска файлов
+     (tools/gen-qr.mjs) для растеризации в PNG. Клиентской страницей
+     не используется, поэтому в API вынесена с отдельным именем. */
+  function encodeToMatrix(text, opts) {
+    opts = opts || {};
+    var ecl = opts.ecl || 'M';
+
+    var bytes = utf8Bytes(text);
+    var version = pickVersion(bytes.length, ecl);
+    if (!version) {
+      throw new Error('Строка слишком длинная для QR (версия до 20): ' + bytes.length + ' байт');
+    }
+
+    var data = buildCodewords(bytes, version, ecl);
+    var all = addEccAndInterleave(data, version, ecl);
+    var qr = new QrMatrix(version, ecl, all);
+
+    return { modules: qr.modules, size: qr.size, version: version, ecl: ecl };
+  }
+
   /* Возвращает SVG-строку */
   function encodeToSvg(text, opts) {
     opts = opts || {};
@@ -539,6 +559,7 @@
 
   global.QrCode = {
     encodeToSvg: encodeToSvg,
+    encodeToMatrix: encodeToMatrix,
     utf8Bytes: utf8Bytes,
     pickVersion: pickVersion,
     /* Внутренние функции — для тестов. Клиентской страницей не
