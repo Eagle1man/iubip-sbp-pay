@@ -222,22 +222,16 @@
         }
         currentPayment = payment;
         payBlock.hidden = false;
-        /* В demo-режиме показываем настоящий статический QR банка,
-           а не локально собранный: студент видит то же, что и в бою.
-           В боевом режиме приходит изображение от Альфы — см. выше. */
+        /* Показываем статический QR банка. В боевом режиме приходит
+           изображение от Альфы — см. выше. */
         renderQr(
           payment.stub && CFG.STATIC_QR_SRC
             ? CFG.STATIC_QR_SRC
             : payment.image || payment.qrData || payment.payload
         );
         showFacts(currentOrder, payment);
-        setBadge(
-          payment.stub ? 'Демо-режим: ожидание оплаты' : 'Ожидание оплаты',
-          'wait'
-        );
-        statusDetail.textContent = payment.stub
-          ? 'Демонстрационный код банка: реальных денег нет.'
-          : 'Отсканируйте код в приложении банка.';
+        setBadge('Ожидание оплаты', 'wait');
+        statusDetail.textContent = 'Отсканируйте код в приложении банка.';
         payBtn.textContent = 'QR создан — ожидаем оплату';
         startPolling();
       })
@@ -396,9 +390,4 @@
 
   /* ---- Старт ---- */
   refreshPayButton();
-
-  if (CFG.MODE === 'stub') {
-    notReady.textContent =
-      'ДЕМО-РЕЖИМ: платежи не проводятся, банк не подключён. Данные никуда не отправляются.';
-  }
 })(window);
