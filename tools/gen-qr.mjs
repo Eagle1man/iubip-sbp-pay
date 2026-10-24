@@ -49,7 +49,7 @@ const TARGETS = [
        читается камерой.
        ВАЖНО: статический QR не несёт сумму и ФИО — см. README. */
     name: 'alfa-qr',
-    url: 'https://qr.nspk.ru/AS1A003R0QAVSGQG9H1B6KJ8U4Q9MQFI',
+    url: 'https://qr.nspk.ru/AS1A002A0L8P666A86NAJLOINQSB1DGN',
     note: 'Статический QR банка: оплата через СБП',
   },
 ];

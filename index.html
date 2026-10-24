@@ -120,8 +120,10 @@
 
       <div class="row">
         <div class="field">
-          <label for="phone">Телефон обучающегося</label>
-          <input type="tel" id="phone" name="phone" placeholder="+7 900 000-00-00" maxlength="20" required>
+          <!-- id ≠ "phone": шаблон Bitrix выполняет $("#phone").mask(...) и перехватывает
+               поле с таким id (маска с "_", определений нет — ввод не принимается). -->
+          <label for="pay-phone">Телефон обучающегося</label>
+          <input type="tel" id="pay-phone" name="phone" placeholder="+7 900 000-00-00" maxlength="20" required>
           <span class="err" data-for="phone"></span>
           <span class="note">нужен для идентификации плательщика в СБП</span>
         </div>
