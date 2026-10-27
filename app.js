@@ -4,7 +4,7 @@
      1. Валидация формы  — можно ли вообще переходить к оплате
      2. Прокрутка оферты — прочитал или нет
      3. Две галочки       — акцепт оферты и согласие на ПДн
-     4. Оплата            — создание QR и опрос статуса
+     4. Оплата            — открытие внешней страницы оплаты
    ========================================================================== */
 
 (function (global) {
@@ -30,17 +30,10 @@
   var notReady = $('not-ready');
   var payBlock = $('pay-block');
   var purposeText = $('purpose-text');
-  var qrHolder = $('qr-holder');
-  var qrPlaceholder = $('qr-placeholder');
-  var statusBadge = $('status-badge');
-  var statusDetail = $('status-detail');
-  var resultBox = $('result-box');
+  var payLink = $('pay-link');
 
   var offerRead = false;
   var currentOrder = null;
-  var currentPayment = null;
-  var pollTimer = null;
-  var pollStart = 0;
 
   /* ---- Документы ---- */
   offerBody.innerHTML = global.OFFER_HTML;
@@ -153,158 +146,35 @@
     }
   }
 
-  /* ---- Показ QR ---- */
-  function renderQr(qrDataOrImage) {
-    qrPlaceholder.hidden = true;
-    qrHolder.innerHTML = '';
-
-    if (!qrDataOrImage) {
-      qrPlaceholder.hidden = false;
-      return;
-    }
-
-    /* Готовое изображение: base64 от Альфы или файл в assets/ */
-    if (
-      qrDataOrImage.indexOf('data:image') === 0 ||
-      /\.(svg|png)$/i.test(qrDataOrImage)
-    ) {
-      var img = document.createElement('img');
-      img.src = qrDataOrImage;
-      img.alt = 'QR-код для оплаты через СБП';
-      qrHolder.appendChild(img);
-      return;
-    }
-
-    /* В демо-режиме рисуем QR сами — см. qr-renderer.js */
-    try {
-      var result = global.QrCode.encodeToSvg(qrDataOrImage, { size: 300, ecl: 'M' });
-      qrHolder.innerHTML = result.svg;
-    } catch (e) {
-      qrPlaceholder.hidden = false;
-      qrPlaceholder.innerHTML =
-        '<span>Не удалось построить QR</span><small>' +
-        String(e.message).slice(0, 120) + '</small>';
-    }
-  }
-
-  function setBadge(text, state) {
-    statusBadge.textContent = text;
-    statusBadge.className = 'badge' + (state ? ' badge-' + state : '');
-  }
-
-  function showFacts(order, payment) {
+  /* ---- Показ данных заказа ---- */
+  function showFacts(order) {
     $('fact-amount').textContent = order.amount + ' ₽';
     $('fact-fio').textContent = order.fio;
     $('fact-group').textContent = order.group;
     $('fact-order').textContent = order.orderNumber;
-    $('fact-qrcid').textContent = payment ? payment.qrcId : '—';
   }
 
-  /* ---- Оплата ---- */
+  /* ---- Оплата ----
+     Данные формы на внешнюю страницу НЕ уходят: адрес в CFG.PAYMENT_URL
+     фиксированный. Всё, что мы показываем здесь, — подтверждение для
+     самого студента и номер заказа для бухгалтерии. */
   function startPayment() {
     var r = computeReady();
     if (!r.ready) return;
 
     currentOrder = r.formState.order;
-    var adapter = global.AlfaSBP.current();
 
     clearErrors();
-    payBtn.disabled = true;
-    payBtn.textContent = 'Создаём QR-код…';
-    notReady.textContent = 'Регистрируем платёж…';
-    notReady.classList.add('ok');
+    payLink.href = CFG.PAYMENT_URL;
+    showFacts(currentOrder);
+    payBlock.hidden = false;
+    payBtn.textContent = 'Страница оплаты открыта в новой вкладке';
 
-    adapter
-      .createPayment(currentOrder)
-      .then(function (payment) {
-        if (!payment.ok) {
-          throw new Error(payment.error || 'Банк отклонил создание платежа');
-        }
-        currentPayment = payment;
-        payBlock.hidden = false;
-        /* Показываем статический QR банка. В боевом режиме приходит
-           изображение от Альфы — см. выше. */
-        renderQr(
-          payment.stub && CFG.STATIC_QR_SRC
-            ? CFG.STATIC_QR_SRC
-            : payment.image || payment.qrData || payment.payload
-        );
-        showFacts(currentOrder, payment);
-        setBadge('Ожидание оплаты', 'wait');
-        statusDetail.textContent = 'Отсканируйте код в приложении банка.';
-        payBtn.textContent = 'QR создан — ожидаем оплату';
-        startPolling();
-      })
-      .catch(function (err) {
-        payBtn.disabled = false;
-        payBtn.textContent = 'Попробовать снова';
-        notReady.classList.remove('ok');
-        notReady.textContent = 'Не удалось создать платёж: ' + err.message;
-        setBadge('Ошибка создания платежа', 'err');
-        statusDetail.textContent = err.message;
-      });
-  }
+    /* Открываем новую вкладку тем же кликом, что и появление блока:
+       так не сработает блокировщик всплывающих окон. */
+    window.open(CFG.PAYMENT_URL, '_blank', 'noopener,noreferrer');
 
-  /* ---- Опрос статуса ----
-     Ограничения Альфы: GetQRCstatus не раньше чем через 10 секунд
-     после создания QR и не чаще одного раза в 3 секунды. */
-  function startPolling() {
-    if (currentPayment && currentPayment.stub) {
-      /* В демо-режиме оплата невозможна — не мучаем сеть опросом */
-      return;
-    }
-    pollStart = Date.now();
-    setTimeout(pollOnce, CFG.STATUS_FIRST_DELAY_MS);
-  }
-
-  function pollOnce() {
-    if (!currentPayment) return;
-
-    global.AlfaSBP.current()
-      .getStatus(currentPayment.qrcId, currentPayment.payrrn)
-      .then(function (res) {
-        if (res.ok && res.status === CFG.STATUS_ACCEPTED) {
-          stopPolling();
-          setBadge('Оплата получена', 'ok');
-          statusDetail.textContent =
-            'Платёж зачислен ' + (res.CreditDatePos || '') + ', trxId ' + (res.trxId || '');
-          showResult(true, res);
-          return;
-        }
-        if (res.ok && res.status === CFG.STATUS_REJECTED) {
-          stopPolling();
-          setBadge('Оплата отклонена', 'err');
-          statusDetail.textContent = 'Платёж отклонён банком плательщика.';
-          showResult(false, res);
-          return;
-        }
-        /* NTST или RCVD — продолжаем ждать */
-        setBadge(global.AlfaSBP.humanStatus(res.status), 'wait');
-        pollTimer = setTimeout(pollOnce, CFG.STATUS_POLL_INTERVAL_MS);
-      })
-      .catch(function (err) {
-        statusDetail.textContent = 'Ошибка запроса статуса: ' + err.message;
-        pollTimer = setTimeout(pollOnce, CFG.STATUS_POLL_INTERVAL_MS);
-      });
-  }
-
-  function stopPolling() {
-    if (pollTimer) {
-      clearTimeout(pollTimer);
-      pollTimer = null;
-    }
-  }
-
-  function showResult(paid, res) {
-    resultBox.hidden = false;
-    resultBox.className = 'result-box ' + (paid ? 'result-ok' : 'result-err');
-    resultBox.innerHTML = paid
-      ? '<strong>Оплата зачислена.</strong><br>' +
-        'Сохраните номер заказа: <code>' + currentOrder.orderNumber + '</code>.<br>' +
-        'Договор вступает в силу с момента поступления средств на счёт ' +
-        'Исполнителя (п. 5.6 оферты).'
-      : '<strong>Оплата не прошла.</strong><br>' +
-        'Попробуйте ещё раз или обратитесь в бухгалтерию ИУБиП.';
+    payBlock.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
   /* ---- Модальное окно ПДн ---- */

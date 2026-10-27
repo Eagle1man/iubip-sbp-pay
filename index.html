@@ -203,38 +203,26 @@
     </button>
 
     <div id="pay-block" hidden>
-      <div class="qr-area">
-        <div class="qr-box">
-          <div id="qr-holder" class="qr-holder"></div>
-          <div class="qr-placeholder" id="qr-placeholder">
-            <span>Место для QR-кода СБП</span>
-            <small>появится после подключения эквайринга</small>
-          </div>
-        </div>
-        <ol class="pay-steps">
-          <li>Откройте приложение своего банка на телефоне.</li>
-          <li>Перейдите в раздел переводов по QR-коду.</li>
-          <li>Наведите камеру на код или выберите оплату по QR.</li>
-          <li>Проверьте назначение платежа и сумму.</li>
-          <li>Подтвердите оплату.</li>
-        </ol>
+      <div class="pay-link">
+        <p class="pay-link-text">
+          Откроется страница оплаты в новой вкладке. Оплата проходит
+          на стороне платёжного сервиса — статус здесь не отслеживается.
+        </p>
+        <a class="pay-link-open" id="pay-link" href="#" target="_blank"
+           rel="noopener noreferrer">Открыть страницу оплаты</a>
+        <p class="pay-link-note">
+          Сохраните номер заказа: он понадобится бухгалтерии ИУБиП.
+        </p>
       </div>
 
       <div class="status-box">
-        <div class="status-line">
-          <span id="status-badge" class="badge">Ожидание оплаты</span>
-          <span id="status-detail" class="status-detail"></span>
-        </div>
         <dl class="status-facts">
           <div><dt>Сумма</dt><dd id="fact-amount">—</dd></div>
           <div><dt>Обучающийся</dt><dd id="fact-fio">—</dd></div>
           <div><dt>Группа</dt><dd id="fact-group">—</dd></div>
           <div><dt>Номер заказа</dt><dd id="fact-order">—</dd></div>
-          <div><dt>Идентификатор QR</dt><dd id="fact-qrcid">—</dd></div>
         </dl>
       </div>
-
-      <div id="result-box" class="result-box" hidden></div>
     </div>
   </section>
 
@@ -261,7 +249,6 @@
 <script src="offer.js"></script>
 <script src="alfa-sbp.js"></script>
 <script src="validation.js"></script>
-<script src="qr-renderer.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
