@@ -48,7 +48,7 @@ const TARGETS = [
        формы в адрес не подставляются, поэтому код одинаков для всех.
        ВАЖНО: это не динамический код банка — сумму и ФИО он не несёт. */
     name: 'alfa-qr',
-    url: 'https://securepayecom.com/sc/AEdCbbztbcVtMJmh',
+    url: 'https://securepayecom.com/sc/uaaYSUHffFrTRMJv',
     note: 'Страница оплаты (внешний сервис)',
   },
 ];

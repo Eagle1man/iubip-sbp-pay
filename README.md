@@ -31,7 +31,7 @@ QR-код на самой странице не показывается. Ста
 Адрес страницы оплаты задаётся в одном месте — `config.js`:
 
 ```js
-PAYMENT_URL: 'https://securepayecom.com/sc/AEdCbbztbcVtMJmh',
+PAYMENT_URL: 'https://securepayecom.com/sc/uaaYSUHffFrTRMJv',
 ```
 
 Это **фиксированный адрес**: параметры из формы (сумма, ФИО, номер
